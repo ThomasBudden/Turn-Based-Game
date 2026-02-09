@@ -151,7 +151,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Chars: {fileID: 781632930}
   playerTurn: 0
-  playerCharArray: []
+  playerCharArray:
+  - {fileID: 1488183303}
   currentChar: {fileID: 0}
   characterSelected: 0
 --- !u!114 &216101871
@@ -758,6 +759,11 @@ Transform:
   - {fileID: 330585546}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1488183303 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1033615890065760007, guid: dec8c0ed2809fb3448190283998f1ee0, type: 3}
+  m_PrefabInstance: {fileID: 7183175437492290130}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1488183304 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5683797073961463579, guid: dec8c0ed2809fb3448190283998f1ee0, type: 3}
