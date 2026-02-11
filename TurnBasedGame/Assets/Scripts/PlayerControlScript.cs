@@ -5,11 +5,12 @@ using UnityEngine.AI;
 public class PlayerControlScript : MonoBehaviour
 {
     public GameObject Chars;
-    public bool playerTurn;
+    public GameObject camCenter;
     public GameObject[] playerCharArray;
     public GameObject currentChar;
     public bool characterSelected;
     private Vector3 hitPoint;
+    public bool[] currentAction; //0 = move
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -19,48 +20,51 @@ public class PlayerControlScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (playerTurn == true)
+        if (characterSelected == true)
         {
-            if (Input.GetMouseButtonDown(1))
+            camCenter.transform.position = currentChar.transform.position;
+        }
+        if (Input.GetMouseButtonDown(1) && characterSelected == true && currentAction[0] == true && GameManagerScript.playerTurn == true)
+        {
+            RaycastHit raycastHit;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out raycastHit, 100f))
             {
-                RaycastHit raycastHit;
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                if (Physics.Raycast(ray, out raycastHit, 100f))
-                {
-                    if (raycastHit.transform != null)
-                    {
-                       PickingChar(raycastHit.transform.gameObject);
-                    }
-                }
-            }
-            if (Input.GetMouseButtonDown(0) && characterSelected == true)
-            {
-                RaycastHit raycastHit;
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                if (Physics.Raycast(ray, out raycastHit, 100f))
-                {
-                    Vector3 hitPoint = raycastHit.point;
-                    if (raycastHit.transform != null)
-                    {
-                        MovingChar(raycastHit.transform.gameObject);
-                    }
-                }
+                Vector3 hitPoint = raycastHit.point;
+                currentChar.GetComponent<NavMeshAgent>().destination = hitPoint;
             }
         }
     }
-    public void PickingChar(GameObject gameObject)
+    public void PickingChar1()
     {
-        if (gameObject.tag == "PlayerChar")
-        {
-            currentChar = gameObject;
-            characterSelected = true;
-        }
+        currentChar = playerCharArray[0];
+        characterSelected = true;
     }
-    public void MovingChar(GameObject gameObject)
+    public void PickingChar2()
     {
-        if (gameObject.tag == "Ground")
+        currentChar = playerCharArray[1];
+    }
+    public void PickingChar3()
+    {
+        currentChar = playerCharArray[2];
+    }
+    public void PickingChar4()
+    {
+        currentChar = playerCharArray[3];
+    }
+
+    public void moveSelected()
+    {
+        for (int i = 0; i < currentAction.Length; i++)
         {
-            currentChar.GetComponent<NavMeshAgent>().destination = hitPoint;
+            if (i == 0)
+            {
+                currentAction[i] = true;
+            }
+            else if (i != 0)
+            {
+                currentAction[i] = false;
+            }
         }
     }
 }
