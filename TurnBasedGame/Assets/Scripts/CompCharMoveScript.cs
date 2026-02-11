@@ -8,6 +8,8 @@ public class CompCharMoveScript : MonoBehaviour
     public GameObject currentcompChar;
     public NavMeshAgent currentAgent;
     public int actionRand;
+    public int compCharTurns = 0;
+    public bool takingAction;
 
     public GameObject closestPlayerChar;
     public float closestPlayerCharDistance = 100000;
@@ -21,22 +23,35 @@ public class CompCharMoveScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (compCharTurns == compChars.Length)
+        {
+            EventManagerScript.current.onPlayerTurn();
+        }
 
+        if (currentcompChar.transform.position == currentAgent.destination && GameManagerScript.enemyturn == true)
+        {
+            takingAction = false;
+            makeAttack();
+            compCharTurns += 1;
+        }
     }
 
     public void OnEnemyTurn()
     {
+        compCharTurns = 0;
         for (int i = 0; i < compChars.Length; i++)
         {
-            currentcompChar = compChars[i];
-            currentAgent = currentcompChar.GetComponent<NavMeshAgent>();
-            actionRand = Random.Range(0, 1);
-            if (actionRand == 0)
+            while (takingAction != true)
             {
-                meleeAction();
+                currentcompChar = compChars[i];
+                currentAgent = currentcompChar.GetComponent<NavMeshAgent>();
+                actionRand = Random.Range(0, 1); // 0 = melee attack
+                if (actionRand == 0)
+                {
+                    meleeAction();
+                }
             }
         }
-        EventManagerScript.current.onPlayerTurn();
     }
 
     public void meleeAction()
@@ -47,9 +62,19 @@ public class CompCharMoveScript : MonoBehaviour
                 if (Vector3.Distance(currentcompChar.transform.position, playerChars[i].transform.position) < closestPlayerCharDistance)
                 {
                     closestPlayerChar = playerChars[i];
+                    closestPlayerCharDistance = Vector3.Distance(currentcompChar.transform.position, playerChars[i].transform.position);
                 }
             }
         }
         currentAgent.destination = closestPlayerChar.transform.position + new Vector3(5,5,0);
+        takingAction = true;
+    }
+
+    public void makeAttack()
+    {
+        if (actionRand == 0)
+        {
+
+        }
     }
 }
